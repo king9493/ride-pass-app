@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CustomerPortal from './components/CustomerPortal';
 
 const BASE_FARE = 100;
 const PER_KM_RATE = 30;
@@ -115,6 +116,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans p-4">
+      {/* View Switcher Header */}
       <div className="max-w-xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl p-2 mb-6 flex justify-between items-center text-xs">
         <span className="font-bold text-slate-500 px-2 uppercase">Switch View:</span>
         <div className="flex gap-1">
@@ -145,6 +147,7 @@ export default function App() {
         </div>
       )}
 
+      {/* Driver View */}
       {role === 'driver' && (
         <div className="max-w-xl mx-auto bg-slate-900 p-6 rounded-2xl border border-slate-800">
           <h2 className="text-xl font-bold mb-4 text-[#FFC800]">Driver Console ({driver.name})</h2>
@@ -181,30 +184,26 @@ export default function App() {
         </div>
       )}
 
+      {/* Customer View */}
       {role === 'customer' && (
-        <div className="max-w-xl mx-auto bg-slate-900 p-6 rounded-2xl border border-slate-800">
-          <h2 className="text-xl font-bold mb-2 text-[#FFC800]">Customer Portal ({customer.name})</h2>
-          <p className="text-sm text-slate-400 mb-4">Remaining Balance: <span className="font-bold text-white">{customer.remainingKm} Km</span></p>
-
-          {pendingTrip ? (
-            <div className="bg-slate-800 p-4 rounded-xl space-y-3">
-              <p className="font-bold text-amber-400">Pending Trip Approval</p>
-              <p className="text-sm">Driver: {pendingTrip.driverName}</p>
-              <p className="text-sm">Distance: {pendingTrip.distanceKm} Km</p>
-              <p className="text-sm">Fare: {pendingTrip.fareETB} ETB</p>
-              <button
-                onClick={handleApprovePayment}
-                className="w-full bg-emerald-500 text-slate-950 font-bold py-2 rounded-lg hover:bg-emerald-400"
-              >
-                Approve Payment
-              </button>
-            </div>
-          ) : (
-            <p className="text-sm text-slate-500 italic">No pending trip payment requests.</p>
-          )}
-        </div>
+        <CustomerPortal
+          customer={customer}
+          customerTab={customerTab}
+          setCustomerTab={setCustomerTab}
+          pendingTrip={pendingTrip}
+          onApprovePayment={handleApprovePayment}
+          selectedPkg={selectedPkg}
+          setSelectedPkg={setSelectedPkg}
+          paymentGateway={paymentGateway}
+          setPaymentGateway={setPaymentGateway}
+          phoneNumber={phoneNumber}
+          setPhoneNumber={setPhoneNumber}
+          isProcessingPayment={isProcessingPayment}
+          onConfirmPurchase={handleConfirmPackagePurchase}
+        />
       )}
 
+      {/* Admin Log View */}
       {role === 'admin' && (
         <div className="max-w-xl mx-auto bg-slate-900 p-6 rounded-2xl border border-slate-800">
           <h2 className="text-xl font-bold mb-4 text-[#FFC800]">Database Logs</h2>
@@ -213,9 +212,12 @@ export default function App() {
           ) : (
             <ul className="space-y-2 text-xs">
               {logs.map((log) => (
-                <li key={log.id} className="p-3 bg-slate-800 rounded-lg flex justify-between">
-                  <span>{log.type} - {log.customerName}</span>
-                  <span className="text-slate-400">{log.timestamp}</span>
+                <li key={log.id} className="p-3 bg-slate-800 rounded-lg flex justify-between items-center">
+                  <div>
+                    <p className="font-bold text-white">{log.type}</p>
+                    <p className="text-slate-400">{log.customerName} - {log.packageName || `${log.distanceKm} Km`}</p>
+                  </div>
+                  <span className="text-slate-500">{log.timestamp}</span>
                 </li>
               ))}
             </ul>
