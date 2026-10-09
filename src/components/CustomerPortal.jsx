@@ -28,7 +28,8 @@ export default function CustomerPortal({
   onConfirmPurchase
 }) {
   return (
-    <div className="max-w-md mx-auto bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-5">
+    <div className="max-w-md mx-auto bg-slate-900 p-6 rounded-2xl border border-slate-800 space-y-5 font-sans">
+      {/* Header Profile Info */}
       <div className="flex justify-between items-center border-b border-slate-800 pb-4">
         <div>
           <h2 className="text-lg font-black text-white">{customer.name}</h2>
@@ -39,21 +40,27 @@ export default function CustomerPortal({
         </div>
       </div>
 
+      {/* Navigation Tabs */}
       <div className="grid grid-cols-2 gap-2 bg-slate-950 p-1 rounded-xl border border-slate-800 text-xs">
         <button
           onClick={() => setCustomerTab('ride')}
-          className={`py-2 rounded-lg font-bold transition-all ${customerTab === 'ride' ? 'bg-[#FFC800] text-slate-950' : 'text-slate-400'}`}
+          className={`py-2 rounded-lg font-bold transition-all ${
+            customerTab === 'ride' ? 'bg-[#FFC800] text-slate-950' : 'text-slate-400 hover:text-white'
+          }`}
         >
           Active Ride
         </button>
         <button
           onClick={() => setCustomerTab('packages')}
-          className={`py-2 rounded-lg font-bold transition-all ${customerTab === 'packages' ? 'bg-[#FFC800] text-slate-950' : 'text-slate-400'}`}
+          className={`py-2 rounded-lg font-bold transition-all ${
+            customerTab === 'packages' ? 'bg-[#FFC800] text-slate-950' : 'text-slate-400 hover:text-white'
+          }`}
         >
           Buy Km Package
         </button>
       </div>
 
+      {/* Tab Contents */}
       {customerTab === 'ride' ? (
         <div>
           {pendingTrip ? (
@@ -90,6 +97,8 @@ export default function CustomerPortal({
       ) : (
         <div className="space-y-4">
           <p className="text-xs text-slate-400">Select a prepaid distance package to refill your ride balance:</p>
+
+          {/* Package Selection Cards */}
           <div className="space-y-3">
             {KM_PACKAGES.map((pkg) => (
               <div
@@ -120,6 +129,7 @@ export default function CustomerPortal({
             ))}
           </div>
 
+          {/* Checkout Area */}
           {selectedPkg && (
             <div className="bg-slate-950 p-4 rounded-2xl border border-[#FFC800]/40 space-y-4">
               <div className="flex justify-between items-center border-b border-slate-800 pb-2">
@@ -127,17 +137,19 @@ export default function CustomerPortal({
                 <button onClick={() => setSelectedPkg(null)} className="text-xs text-slate-500 hover:text-white">✕</button>
               </div>
 
+              {/* Payment Methods */}
               <div className="space-y-2">
                 <label className="text-[11px] font-bold text-slate-400 block">Select Payment Method:</label>
                 <div className="grid grid-cols-3 gap-2">
                   {PAYMENT_METHODS.map((method) => (
                     <button
                       key={method.id}
+                      type="button"
                       onClick={() => setPaymentGateway(method.id)}
                       className={`p-2 rounded-xl text-[11px] font-bold border transition-all ${
                         paymentGateway === method.id
                           ? 'border-[#FFC800] bg-[#FFC800]/10 text-[#FFC800]'
-                          : 'border-slate-800 bg-slate-900 text-slate-400'
+                          : 'border-slate-800 bg-slate-900 text-slate-400 hover:border-slate-700'
                       }`}
                     >
                       {method.name}
@@ -146,20 +158,23 @@ export default function CustomerPortal({
                 </div>
               </div>
 
+              {/* Mobile Phone Input */}
               <div className="space-y-1">
                 <label className="text-[11px] font-bold text-slate-400 block">Mobile Wallet Number:</label>
                 <input
                   type="text"
+                  placeholder="09XXXXXXXX"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
-                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono font-bold"
+                  className="w-full bg-slate-900 border border-slate-800 rounded-xl p-2.5 text-xs text-white font-mono font-bold focus:outline-none focus:border-[#FFC800]"
                 />
               </div>
 
+              {/* Confirm Purchase Button */}
               <button
                 onClick={onConfirmPurchase}
                 disabled={isProcessingPayment}
-                className="w-full bg-[#FFC800] text-slate-950 font-black py-3 rounded-xl text-xs uppercase hover:bg-amber-400 transition-all"
+                className="w-full bg-[#FFC800] text-slate-950 font-black py-3 rounded-xl text-xs uppercase hover:bg-amber-400 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isProcessingPayment ? "Processing Payment..." : `Pay ${selectedPkg.price} ETB & Add +${selectedPkg.km} Km`}
               </button>
